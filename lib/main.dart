@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart'; 
 
 // IMPORTS DAS SUAS TELAS
 import 'features/home/home.dart';
-import 'features/landingpage/landingpage.dart'; // <--- Importe o arquivo novo aqui
+import 'features/landingpage/landingpage.dart'; 
+import 'features/register/register.dart';
 
-// Se tiver outras telas criadas, descomente:
-// import 'screens/fipe_screen.dart';
-// import 'screens/mapa_screen.dart';
-
-void main() {
-  runApp(const MeuAppAuto());
+void main() async { // 
+  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized(); // Garante que o sistema tá pronto
+  
+  // Inicializa o Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 }
 
-class MeuAppAuto extends StatelessWidget {
-  const MeuAppAuto({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Auto Helper',
+      title: 'Ride Safe',
       debugShowCheckedModeBanner: false,
       
       theme: ThemeData(
@@ -40,7 +45,7 @@ class MeuAppAuto extends StatelessWidget {
         '/login': (context) => const LandingPage(),
 
         // Outras rotas futuras:
-        // '/fipe': (context) => const FipeScreen(),
+        '/register': (context) => const RegisterScreen(),
       },
     );
   }

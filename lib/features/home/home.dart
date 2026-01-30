@@ -9,7 +9,7 @@ class HomeScreen extends StatelessWidget {
       // --- BARRA SUPERIOR ---
       appBar: AppBar(
         title: const Text('Menu Principal'),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: const Color(0xFFCF0025),
         foregroundColor: Colors.white, // Cor do texto/ícones
         actions: [
           // Botão de Logout (Sair)
