@@ -31,38 +31,97 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  Future<void> _realizarCadastro() async {
+//  Future<void> _realizarCadastro() async {
     // 1. Validações Básicas
-    if (_nomeController.text.isEmpty || 
-        _sobrenomeController.text.isEmpty ||
-        _emailController.text.isEmpty || 
-        _senhaController.text.isEmpty) {
-      _mostrarErro("Preencha todos os campos.");
-      return;
-    }
+//    if (_nomeController.text.isEmpty || 
+//        _sobrenomeController.text.isEmpty ||
+//        _emailController.text.isEmpty || 
+//        _senhaController.text.isEmpty) {
+//      _mostrarErro("Preencha todos os campos.");
+//      return;
+//    }
+//
+//   if (_senhaController.text != _confirmaSenhaController.text) {
+//      _mostrarErro("As senhas não conferem.");
+//      return;
+//    }
+//
+//    if (!_termosAceitos) {
+//      _mostrarErro("Você precisa aceitar os termos.");
+//      return;
+//    }
+//
+//    setState(() => _isLoading = true);
+//
+//    try {
+//      // 2. Cria usuário no Auth
+//      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+//        email: _emailController.text.trim(),
+//        password: _senhaController.text.trim(),
+//      );
+//
+//      String uid = userCredential.user!.uid;
+//
+//      // 3. Salva dados no Firestore
+//      await FirebaseFirestore.instance.collection('usuarios').doc(uid).set({
+//        'nome': _nomeController.text.trim(),
+//        'sobrenome': _sobrenomeController.text.trim(),
+//        'email': _emailController.text.trim(),
+//        'criado_em': FieldValue.serverTimestamp(),
+//        'tipo_conta': 'padrao',
+//      });
+//
+//      // 4. Sucesso! Volta para o Login (pulando animação)
+//      if (mounted) {
+//        // Envia um argumento 'pularAnimacao' como true
+//        Navigator.pushReplacementNamed(context, '/login', arguments: {'pularAnimacao': true});
+//        
+//        ScaffoldMessenger.of(context).showSnackBar(
+//          const SnackBar(content: Text("Conta criada com sucesso!")),
+//        );
+//      }
+//
+//    } on FirebaseAuthException catch (e) {
+//      String msg = "Erro ao cadastrar.";
+//      if (e.code == 'email-already-in-use') msg = "Este e-mail já está em uso.";
+//      if (e.code == 'weak-password') msg = "A senha é muito fraca.";
+//      _mostrarErro(msg);
+//    } finally {
+//      if (mounted) setState(() => _isLoading = false);
+//    }
+//  }
 
-    if (_senhaController.text != _confirmaSenhaController.text) {
-      _mostrarErro("As senhas não conferem.");
-      return;
-    }
+//  void _mostrarErro(String msg) {
+//    ScaffoldMessenger.of(context).showSnackBar(
+//      SnackBar(content: Text(msg), backgroundColor: Colors.red),
+//    );
+//  }
 
-    if (!_termosAceitos) {
-      _mostrarErro("Você precisa aceitar os termos.");
+Future<void> _realizarCadastro() async {
+    print("--- 1. INICIANDO PROCESSO DE CADASTRO ---");
+
+    // Validações básicas
+    if (_nomeController.text.isEmpty || _emailController.text.isEmpty || _senhaController.text.isEmpty) {
+      _mostrarErro("Preencha todos os campos!");
       return;
     }
 
     setState(() => _isLoading = true);
 
     try {
-      // 2. Cria usuário no Auth
+      // ETAPA A: AUTENTICAÇÃO
+      print("--- 2. TENTANDO CRIAR USUÁRIO NO AUTH ---");
       UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _senhaController.text.trim(),
       );
-
+      
       String uid = userCredential.user!.uid;
+      print(">>> SUCESSO AUTH! ID GERADO: $uid");
 
-      // 3. Salva dados no Firestore
+      // ETAPA B: BANCO DE DADOS
+      print("--- 3. TENTANDO SALVAR NO FIRESTORE ---");
+      
       await FirebaseFirestore.instance.collection('usuarios').doc(uid).set({
         'nome': _nomeController.text.trim(),
         'sobrenome': _sobrenomeController.text.trim(),
@@ -71,29 +130,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
         'tipo_conta': 'padrao',
       });
 
-      // 4. Sucesso! Volta para o Login (pulando animação)
+      print(">>> SUCESSO FIRESTORE! DADOS SALVOS.");
+
+      // ETAPA C: NAVEGAÇÃO
       if (mounted) {
-        // Envia um argumento 'pularAnimacao' como true
         Navigator.pushReplacementNamed(context, '/login', arguments: {'pularAnimacao': true});
-        
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Conta criada com sucesso!")),
+          const SnackBar(content: Text("Sucesso! Faça login.")),
         );
       }
 
     } on FirebaseAuthException catch (e) {
-      String msg = "Erro ao cadastrar.";
-      if (e.code == 'email-already-in-use') msg = "Este e-mail já está em uso.";
-      if (e.code == 'weak-password') msg = "A senha é muito fraca.";
-      _mostrarErro(msg);
+      print("!!! ERRO NO AUTH (LOGIN/SENHA) !!!");
+      print("CÓDIGO: ${e.code}");
+      print("MENSAGEM: ${e.message}");
+      _mostrarErro("Erro no cadastro: ${e.message}");
+    
+    } catch (e) {
+      // AQUI É ONDE O SEU ERRO DEVE ESTAR
+      print("!!! ERRO NO BANCO DE DADOS (FIRESTORE) !!!");
+      print("O ERRO EXATO É: $e");
+      _mostrarErro("Erro ao salvar dados: $e");
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
 
-  void _mostrarErro(String msg) {
+  void _mostrarErro(String mensagem) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg), backgroundColor: Colors.red),
+      SnackBar(
+        content: Text(mensagem),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 4), // Fica visível por 4 segundos
+      ),
     );
   }
 
