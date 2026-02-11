@@ -79,7 +79,7 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   // Função para fazer Login
-  Future<void> _fazerLogin() async {       // Mostra um loading rápido
+  Future<void> _fazerLogin() async {  // Mostra um loading rápido
     try {
       showDialog(
         context: context,
