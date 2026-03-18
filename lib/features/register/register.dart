@@ -107,7 +107,7 @@ Future<void> _realizarCadastro() async {
         backgroundColor: Colors.transparent, // AppBar invisível
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          icon: const Icon(Icons.arrow_back_ios, color: Color(0xFFCF0025)),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -155,9 +155,9 @@ Future<void> _realizarCadastro() async {
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1), // Efeito vidro
+                      color: const Color.fromARGB(255, 164, 164, 164).withOpacity(0.1), // Efeito vidro
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.white.withOpacity(0.2)),
+                      border: Border.all(color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.2)),
                     ),
                     child: Column(
                       children: [
@@ -222,10 +222,10 @@ Future<void> _realizarCadastro() async {
       controller: controller,
       obscureText: oculto,
       keyboardType: tipo,
-      style: const TextStyle(color: Colors.white),
+      style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: Colors.white70),
+        prefixIcon: Icon(icon, color: const Color(0xFFCF0025)),
         // O restante do estilo já vem do ThemeData no main.dart!
       ),
     );

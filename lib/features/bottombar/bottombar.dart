@@ -26,6 +26,7 @@ class _BottombarState extends State<BottomBar> {
     const MapScreen(),     // 2
     const ConfigScreen(),   // 3
   ];
+  @override
   void initState() {
     super.initState();
     // Chama as funções ao iniciar a tela

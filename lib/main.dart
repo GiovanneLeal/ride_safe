@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
         // Estilo Global dos Inputs (Caixas de Texto)
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: Colors.grey[200], // Fundo cinza claro
+          fillColor: Colors.grey[200], 
           labelStyle: const TextStyle(color: Colors.black54),
           prefixIconColor: const Color(0xFFCF0025),
           border: OutlineInputBorder(
